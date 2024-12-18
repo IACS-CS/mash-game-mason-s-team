@@ -7,11 +7,20 @@ const App = () => {
   // Note: this function runs once when the App starts up
   // and then again any piece of state 
   // changes!
-  
-  // Example state and setter
+
+  //Chat GPT help
+  const groups = ["Letters for Group A", "Letters for Group B", "Letters for Group C", "Letters for Group D",]
+  const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
   //lists:
   const [group, setGroup] = useState('Letters for Group A');
-  const [groupInputs, setGroupInputs] = useState(["___________", "_______", "_______", "_____"]);
+  const [groupInputs, setGroupInputs] = useState(["", "", "", ""]);
+  //const [groupInputs, setGroupInputs] = useState(["___________", "_______", "_______", "_____"]);
+  // Chat GPT gave me this:   const [groupInputs, setGroupInputs] = useState([
+//{word: "Netherlands", inputs: ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"]}
+//{word: "Ecuador", inputs: ["_", "_", "_", "_", "_", "_", "_"]}
+//{word: "Senegal", inputs: ["_", "_", "_", "_", "_", "_", "_"]}
+//{word: "Qatar", inputs: ["_", "_", "_", "_", "_"]}, but it doesn't work, for having a set of characters in each set.
+ 
   const [page, setPage] = useState(1);
   
   // The console.log statement below will show you each time
@@ -32,37 +41,42 @@ const App = () => {
   const onGroupItemInputChange = (e, index) => {
     const newInputs = [...groupInputs]; // Copy the current inputs array
     newInputs[index] = e.target.value;     // Update the value at the specific index
-    setCategoryInputs(newInputs);          // Set the updated state
+    setGroupInputs(newInputs);          // Set the updated state
   };
 
   // render parts of our output...
   const renderGroupChooser = () => {
     if (page === 1) {
-     // render the first page...
-     //  I don't know if we should use onNextCategory instead of ()=setPage(2) thing.
-     return (
-     <>
-      <h1>Enter {group}!</h1>
-      {/* Help from ChatGPT*/}
-      {groupInputs.map((input, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => handleInputChange(e, index)} // Update the state when text changes
-                maxLength={input.length}  // Limit input length to match dashes
-                placeholder="Enter a letter" // IT DOESN'T WORK, CHECK IN WITH TEACHER.
-              />
-            </div>
-          ))}
+      // render the first page...
+      return (<>
+        <h1>Enter {group}!</h1>
+        {/* Help from ChatGPT*/}
+        {/* Render inputs for groupInputs */}
+        <div>
+          {groupInputs.map((value, index) => {
+            return (
+              <div key={index}>
+                <label>
+                  {index + 1}:{" "}
+                  <input
+                    type="text"
+                    value={value} // controlled input
+                    onChange={(e) => onGroupItemInputChange(e, index)} // handle input changes
+                  />
+                </label>
+              </div>
+            );
+          })}
+        </div>
 
-      <button onClick={()=>setPage(2)}>Next</button> 
-      
+        <button onClick={()=>setPage(2)}>Next</button>        
       </>)
-  } else {
+    } else {
     return renderCongratulationsPage();
   }
 }
+//NOTE: Add a used letters page section at bottom right, that links it with guessed letter, probably a check mark to it.
+//Having a hint for how many characters for the certain inputs might be useful to the user.
 
 const renderCongratulationsPage = () => {
   if (page === 2) {

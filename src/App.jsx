@@ -4,22 +4,21 @@ import { isReturnStatement } from "typescript";
 
 const App = () => {
 
-  // Note: this function runs once when the App starts up
-  // and then again any piece of state 
-  // changes!
+ //lists:
+  const countriesGroupA = ["NETHERLANDS", "SENEGAL", "QATAR", "ECUADOR"];
+  const countriesGroupB = ["ENGLAND", "IRAN", "UNITED STATES", "WALES"];
 
-  //Chat GPT help
-  const groups = ["Letters for Group A", "Letters for Group B", "Letters for Group C", "Letters for Group D",]
-  const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
-  //lists:
-  const [group, setGroup] = useState('Letters for Group A');
-  const [groupInputs, setGroupInputs] = useState(["", "", "", ""]);
-  //const [groupInputs, setGroupInputs] = useState(["___________", "_______", "_______", "_____"]);
-  // Chat GPT gave me this:   const [groupInputs, setGroupInputs] = useState([
-//{word: "Netherlands", inputs: ["_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_"]}
-//{word: "Ecuador", inputs: ["_", "_", "_", "_", "_", "_", "_"]}
-//{word: "Senegal", inputs: ["_", "_", "_", "_", "_", "_", "_"]}
-//{word: "Qatar", inputs: ["_", "_", "_", "_", "_"]}, but it doesn't work, for having a set of characters in each set.
+  {/* ChatGPT helped set up the grouping this way instead of having inputs for them */}
+    // State to track the guessed letters for each country
+  const [guessedLetters, setGuessedLetters] = useState([]);
+  const [guessedLettersB, setGuessedLettersB] = useState([]);
+
+  const [currentCountryIndex, setCurrentCountryIndex] = useState(0);
+  const[currentCountryIndexB, setCurrentCountryIndexdB] = useState(0);
+
+  const [groupInput, setGroupInput] = useState("");
+ 
+  // Function to check if the user has guessed all letters for the country
  
   const [page, setPage] = useState(1);
   
@@ -29,54 +28,95 @@ const App = () => {
   console.log('Rendering app!','page is', page);
 
 
-  // actions  
-  const onNextGroup = () => {
-    if (group === 'Letters for Group A') {
-      setGroup('Letters for Group B');
-    } else {
-      setPage(3);
-    }
-  }
 
+//might delete this later.
   const onGroupItemInputChange = (e, index) => {
     const newInputs = [...groupInputs]; // Copy the current inputs array
     newInputs[index] = e.target.value;     // Update the value at the specific index
-    setGroupInputs(newInputs);          // Set the updated state
+    setCategoryInputs(newInputs);          // Set the updated state
   };
 
   // render parts of our output...
   const renderGroupChooser = () => {
     if (page === 1) {
-      // render the first page...
-      return (<>
-        <h1>Enter {group}!</h1>
-        {/* Help from ChatGPT*/}
-        {/* Render inputs for groupInputs */}
-        <div>
-          {groupInputs.map((value, index) => {
-            return (
-              <div key={index}>
-                <label>
-                  {index + 1}:{" "}
-                  <input
-                    type="text"
-                    value={value} // controlled input
-                    onChange={(e) => onGroupItemInputChange(e, index)} // handle input changes
-                  />
-                </label>
-              </div>
-            );
-          })}
-        </div>
+     // render the first page...
+     const currentCountry = countriesGroupA[currentCountryIndex];
+    
+     const guessLetter = (ltr) => {
+      if (ltr && !guessedLetters.includes(ltr)) {
+        setGuessedLetters([...guessedLetters, ltr]); // Add the guessed letter to the list
+      }
+      setGroupInput(""); // Clear the input after guessing
+    };
 
-        <button onClick={()=>setPage(2)}>Next</button>        
-      </>)
-    } else {
+    const displayTarget = () => {
+      let output = [];
+      for (let ltr of currentCountry) {
+        if (guessedLetters.includes(ltr)) {
+          output.push(ltr);
+        } else {
+          output.push("_");
+        }
+      }
+      return output.join(" "); 
+    };
+
+    const isCountryGuessed = () => {
+      return currentCountry.split("").every((ltr) => guessedLetters.includes(ltr));
+    };
+
+    {/*ChatGPT helped me set this one up */}
+  const nextCountry = () => {
+    if (isCountryGuessed() && currentCountryIndex < countriesGroupA.length - 1) {
+      setGuessedLetters([]); // Reset the guessed letters
+      setCurrentCountryIndex(currentCountryIndex + 1); // Move to the next country
+    }
+  };
+
+  return (
+    <>
+    <h2>Guess the countries for Group A of the 2022 World Cup!</h2>
+
+    {/*ChatGPT helped me on this downwards */}
+    <label>
+        Guess a letter:
+        <input
+          type="text"
+          //Got rid of the max length for this part
+          value={groupInput} // Controlled input
+          onChange={(e) => setGroupInput(e.target.value.toUpperCase())} // Update input value
+        />
+      </label>
+
+      <button onClick={() => guessLetter(groupInput)}>Guess</button>
+
+      <hr />
+
+      {/* Show the current country with underscores for unguessed letters */}
+      <h3>Country A:</h3>
+      <div>{displayTarget()}</div>
+
+      {/* Shows guessed letters for the current country */}
+      <h4>Letters guessed for this country:</h4>
+      {guessedLetters.map((letter, index) => (
+        <span key={index}>{letter}, </span>
+      ))}
+      <hr />
+
+      {isCountryGuessed() && (
+        <div>
+          <h3>Congratulations! You've guessed this country! {currentCountry}</h3>
+          <button onClick={nextCountry}>Next Country</button>
+        </div>
+      )}
+    </>
+  )
+  } else {
     return renderCongratulationsPage();
   }
 }
-//NOTE: Add a used letters page section at bottom right, that links it with guessed letter, probably a check mark to it.
-//Having a hint for how many characters for the certain inputs might be useful to the user.
+
+
 
 const renderCongratulationsPage = () => {
   if (page === 2) {
@@ -85,7 +125,7 @@ const renderCongratulationsPage = () => {
    <>
     <h1>Congratulations!</h1>
     <h2>Would you like to guess the next group?</h2>
-    <button onClick={onNextGroup}>Next</button> 
+    <button onClick={()=>setPage(3)}>Next</button> 
     </>)
 } else {
   return renderGroupBPage();
@@ -95,10 +135,83 @@ const renderCongratulationsPage = () => {
 
 const renderGroupBPage = () => {
   if (page === 3) {
-    return (<>
-    <h1>Enter some letters!</h1>
-    <button onClick={()=>setPage(4)}>Next</button>
-    </>)
+
+    const currentCountryB = countriesGroupB[currentCountryIndexB];
+
+    const guessLetterB = (ltr) => {
+      if (ltr && !guessedLettersB.includes(ltr)) {
+        setGuessedLettersB([...guessedLettersB, ltr]); // Add the guessed letter to the list
+      }
+      setGroupInput(""); // Clear the input after guessing
+    };
+
+    const displayTargetB = () => {
+      let output = [];
+      for (let ltr of currentCountryB) {
+        if (guessedLettersB.includes(ltr)) {
+          output.push(ltr);
+        } else {
+          output.push("_");
+        }
+      }
+      return output.join(" "); 
+    };
+
+    {/*ChatGPT help: creates a function that checks if the user has guessed all the letters for the country*/}
+    const isCountryGuessed = () => {
+      return currentCountryB.split("").every((ltr) => guessedLettersB.includes(ltr));
+    };
+  
+    {/*ChatGPT helped me set this one up */}
+    const nextCountry = () => {
+      if (isCountryGuessed() && currentCountryIndexB < countriesGroupB.length - 1) {
+        setGuessedLettersB([]); // Reset the guessed letters
+        setCurrentCountryIndexB(currentCountryIndexB + 1); // Move to the next country
+      }
+    };
+
+
+   return (
+    <>
+    <h2>Guess the countries for Group B of the 2022 World Cup!</h2>
+
+    {/*ChatGPT on how to make an input */}
+    <label>
+        Guess a letter:
+        <input
+          type="text"
+          maxLength={1}
+          //I let the max length work for this part
+          value={groupInput} // Controlled input
+          onChange={(e) => setGroupInput(e.target.value.toUpperCase())} // Update input value
+        />
+      </label>
+
+      <button onClick={() => guessLetterB(groupInput)}>Guess</button>
+
+
+      <hr />
+
+      <h3>Country B:</h3>
+      <div>{displayTargetB()}</div>
+
+      {/* Show guessed letters for the current country */}
+      <h4>Letters guessed for this country:</h4>
+      {guessedLettersB.map((letter, index) => (
+        <span key={index}>{letter}, </span>
+      ))}
+      <hr />
+
+      {/* Show a message if the country is fully guessed */}
+      {isCountryGuessed() && (
+        <div>
+          <h3>Congratulations! You've guessed this country! {currentCountryB}</h3>
+          <button onClick={nextCountry}>Next Country</button>
+        </div>
+      )}
+    </>
+   )
+  
   } else {
     return (<p>?</p>)
   }

@@ -5,7 +5,8 @@ import { isReturnStatement } from "typescript";
 const App = () => {
 
  //lists:
-  const countriesGroupA = ["NETHERLANDS", "SENEGAL", "QATAR", "ECUADOR"];
+ //remove the first one later :)
+  const countriesGroupA = ["ALLANCARRIED", "NETHERLANDS", "SENEGAL", "QATAR", "ECUADOR"];
   const countriesGroupB = ["ENGLAND", "IRAN", "UNITED STATES", "WALES"];
 
   {/* ChatGPT helped set up the grouping this way instead of having inputs for them */}
@@ -107,8 +108,11 @@ const App = () => {
         <div>
           <h3>Congratulations! You've guessed this country! {currentCountry}</h3>
           <button onClick={nextCountry}>Next Country</button>
+
+
         </div>
       )}
+      <button onClick={()=>setPage(2)}>Next</button> 
     </>
   )
   } else {
@@ -125,7 +129,7 @@ const renderCongratulationsPage = () => {
    <>
     <h1>Congratulations!</h1>
     <h2>Would you like to guess the next group?</h2>
-    <button onClick={()=>setPage(3)}>Next</button> 
+    <button onClick={()=>setPage(3)}>Next(Yes)</button> 
     </>)
 } else {
   return renderGroupBPage();

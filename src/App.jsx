@@ -6,7 +6,7 @@ const App = () => {
 
  //lists:
  //remove the first one later :)
-  const countriesGroupA = ["ALLANCARRIED", "NETHERLANDS", "SENEGAL", "QATAR", "ECUADOR"];
+  const countriesGroupA = ["NETHERLANDS", "SENEGAL", "QATAR", "ECUADOR"];
   const countriesGroupB = ["ENGLAND", "IRAN", "UNITED STATES", "WALES"];
 
   {/* ChatGPT helped set up the grouping this way instead of having inputs for them */}
@@ -15,7 +15,7 @@ const App = () => {
   const [guessedLettersB, setGuessedLettersB] = useState([]);
 
   const [currentCountryIndex, setCurrentCountryIndex] = useState(0);
-  const[currentCountryIndexB, setCurrentCountryIndexdB] = useState(0);
+  const[currentCountryIndexB, setCurrentCountryIndexB] = useState(0);
 
   const [groupInput, setGroupInput] = useState("");
  
@@ -30,12 +30,7 @@ const App = () => {
 
 
 
-//might delete this later.
-  const onGroupItemInputChange = (e, index) => {
-    const newInputs = [...groupInputs]; // Copy the current inputs array
-    newInputs[index] = e.target.value;     // Update the value at the specific index
-    setCategoryInputs(newInputs);          // Set the updated state
-  };
+
 
   // render parts of our output...
   const renderGroupChooser = () => {

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./App.css";
 import { isReturnStatement } from "typescript";
+import Scramble from "./Scramble";
 
-const App = () => {
+const SpellingBee = () => {
 
  //lists:
  //remove the first one later :)
@@ -225,5 +226,32 @@ const renderGroupBPage = () => {
   </main>
   );
 };
+
+const App = () => {
+  const UNSET = 0;
+  const SCRAMBLE = 1;
+  const SPELLING_BEE = 2;
+  const [mode,setMode] = useState(UNSET);
+  const renderChoices = () => {
+    return <div>
+      <h1>Choose a Game</h1>
+      <button onClick={()=>setMode(SCRAMBLE)}>Scramble</button>
+      <button onClick={()=>setMode(SPELLING_BEE)}>Spelling Bee</button>
+    </div>
+  }
+  const renderApp = () => {
+    if (mode === SCRAMBLE) {
+      return <Scramble/>
+    } else if (mode==SPELLING_BEE) {
+      return <SpellingBee/>
+    } 
+  }
+
+  return (
+  <div>
+    {renderChoices()}
+    {renderApp()}
+    </div>);
+}
 
 export default App;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 
-const App = () => {
+const Scramble = () => {
   const teams = [
     "Argentina",
     "Brazil",
@@ -79,4 +79,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Scramble;

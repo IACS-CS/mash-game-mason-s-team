@@ -3,7 +3,9 @@ import "./App.css";
 import { isReturnStatement } from "typescript";
 import Scramble from "./Scramble";
 
+
 const SpellingBee = () => {
+
 
  //lists:
  //remove the first one later :)
@@ -29,7 +31,7 @@ const SpellingBee = () => {
 
   console.log('Rendering app!','page is', page);
 
-
+    
 
 
 
@@ -79,7 +81,7 @@ const SpellingBee = () => {
         Guess a letter:
         <input
           type="text"
-          //Got rid of the max length for this part
+          maxLength={1} //Got rid of the max length for this part
           value={groupInput} // Controlled input
           onChange={(e) => setGroupInput(e.target.value.toUpperCase())} // Update input value
         />
@@ -174,6 +176,7 @@ const renderGroupBPage = () => {
    return (
     <>
     <h2>Guess the countries for Group B of the 2022 World Cup!</h2>
+
 
     {/*ChatGPT on how to make an input */}
     <label>
